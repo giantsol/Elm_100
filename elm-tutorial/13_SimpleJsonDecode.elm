@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Json.Decode as Decode exposing (decodeString, int)
+import Json.Decode as Decode exposing (decodeString, int, float)
 
 main =
     Html.beginnerProgram {
@@ -17,34 +17,37 @@ type alias Model =
     {
     toIntTargetString: String
     , toIntDecodedString: String
+    , toFloatTargetString: String
+    , toFloatDecodedString: String
     }
 
 model: Model
 model =
-    Model "" ""
+    Model "" "" "" ""
 
 
 -- Update
 
 type Msg =
-    KeyDown Int
-    | InputInt String
+    InputInt String
     | DecodeToInt
+    | InputFloat String
+    | DecodeToFloat
 
 update: Msg -> Model -> Model
 update msg model =
     case msg of
-        KeyDown key ->
-            if key == 13 then
-                update DecodeToInt model
-            else
-                model
-
         InputInt input ->
             { model | toIntTargetString = input }
 
         DecodeToInt ->
             decodeToInt model
+
+        InputFloat input ->
+            { model | toFloatTargetString = input }
+
+        DecodeToFloat ->
+            decodeToFloat model
 
 decodeToInt: Model -> Model
 decodeToInt model =
@@ -61,18 +64,59 @@ decodeToInt model =
                 {model
                 | toIntDecodedString = errorString}
 
+decodeToFloat: Model -> Model
+decodeToFloat model =
+    let
+        result = decodeString float model.toFloatTargetString
+    in
+        case result of
+            Ok value ->
+                {model
+                | toFloatTargetString = ""
+                , toFloatDecodedString = toString value}
+
+            Err errorString ->
+                {model
+                | toFloatDecodedString = errorString}
+
 
 -- View
 view: Model -> Html Msg
 view model =
     div []
         [
-        text "Type in number to decode into Elm integer: "
-        , input [onInput InputInt, value model.toIntTargetString, onKeyDown KeyDown] []
-        , div [] [text model.toIntDecodedString]
+        decodeBox "Type in number to decode into Elm integer: "
+          InputInt
+          model.toIntTargetString
+          DecodeToInt
+          model.toIntDecodedString
+        , decodeBox "Type in float to decode into Elm float: "
+            InputFloat
+            model.toFloatTargetString
+            DecodeToFloat
+            model.toFloatDecodedString
+
         ]
 
-onKeyDown: (Int -> Msg) -> Attribute Msg
-onKeyDown tagger =
-    on "keydown" (Decode.map tagger keyCode)
+decodeBox: String -> (String -> Msg) -> String -> Msg -> String -> Html Msg
+decodeBox desc onInputCallback inputBoxValue decodeToWhat decodedValue =
+    div []
+        [
+        text desc
+        , input [onInput onInputCallback, value inputBoxValue, onEnter decodeToWhat] []
+        , div [] [text decodedValue]
+        ]
+
+onEnter : msg -> Attribute msg
+onEnter tagger =
+    let
+        isEnter code =
+            if code == 13 then
+                Decode.succeed ""
+            else
+                Decode.fail ""
+        decodeEnter =
+            Decode.andThen isEnter keyCode
+    in
+        on "keydown" <| Decode.map (\key -> tagger) decodeEnter
 

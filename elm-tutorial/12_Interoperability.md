@@ -25,4 +25,22 @@ Decode.decodeString Decode.bool "hello"
 위와 같이, Decode.decodeString 함수를 사용하여 하나의 값으로만 이루어진 JSON 파싱이 가능하다.
 위 함수가 뱉어주는 값은 Result 데이터타입으로, 파싱이 성공했는지 실패했는지 여부를 알 수 있다.
 
+물론, 위처럼 하나의 값으로만 이루어진 JSON만 파싱할 수 있는건 아니다. 
+Decode.int같은 값들을 compose하여 더 복잡한 형식들을 파싱할 수 있다.
+
+```elm
+> import Json.Decode exposing (..)
+
+> decodeString (list int) "[1,2,3]"
+Ok [1,2,3] : Result String (List Int)
+
+> decodeString (list (list int)) "[ [0], [1,2,3], [4,5] ]"
+Ok [[0],[1,2,3],[4,5]] : Result String (List (List Int))
+
+> decodeString (field "x" int) """{ "x": 3, "y": 4 }"""
+Ok 3 : Result String Int
+
+
+... and so on
+```
 
