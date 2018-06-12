@@ -1,7 +1,9 @@
-# elm-package generated files
-elm-stuff
-# elm-repl generated files
-repl-temp-*
-
 /.idea
+
+elm-stuff
+repl-temp-*
 elm-sketch.elm
+
+yarn-error.log
+yarn.lock
+node_modules/
