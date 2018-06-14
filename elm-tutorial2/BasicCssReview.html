@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Formatting with css</title>
+  <style>
+
+    /*
+    *은 모든 element를 뜻함
+    box-sizing의 디폴트값은 content-box인데, 사실 직관적인건 border-box인듯.
+    따라서 이 부분에 box-sizing: border-box를 선언해주면 좋을 듯 하다.
+    */
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 기본 text 관련 attributes */
+    h1 {
+      color: green;
+      font-size: 60px;
+      text-align: center;
+      font-family: "Andale Mono", sans-serif;
+      background: aliceblue;
+    }
+
+    /*
+    div는 기본적으로 block-element의 하나로, 화면의 모든 width를 차지하면서 line break를 enforce하는 타입이다.
+    (e.g. p, div ...)
+    block-element와 상반되는 개념은 inline-element이다.
+    (e.g. em, a ...)
+    inline element에는 height와 width를 지정해줄 수 없다.
+    display: inline-block을 줌으로써 inline element처럼 작동하도록 함과 동시에 width&height를 지정해 줄 수 있다.
+    */
+    div.box-sizings {
+      width: 100px;
+      height: 100px;
+      border: black 10px solid;
+      padding: 10px;
+      background: #7fffd488;
+      margin: 4px;
+      display: inline-block;
+    }
+
+    /*content-box는 width, height를 지정하면 padding, border를 제외한 content영역의 크기를 정하게 되는 것*/
+    #content-box-sizing {
+      box-sizing: content-box;
+    }
+
+    /*반면, border-box는 width, height가 padding과 border를 포함한 크기를 나타내게 됨*/
+    #border-box-sizing {
+      box-sizing: border-box;
+    }
+
+    /* left&right margin에 auto를 줌으로써 center-horizontal을 할 수 있음 */
+    .container {
+      width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #dc143c44;
+    }
+
+    /*
+    width에 %값을 주면, parent element 넓이의 %만큼 된다.
+    float라는 속성을 통해 얘가 약간 위의 또다른 레이어같은거에 붕 뜬 것 처럼 할 수 있다.
+     */
+    .percent-75 {
+      width: 75%;
+      margin-left: auto;
+      margin-right: auto;
+      background: #51922f;
+      float: left;
+    }
+
+    .percent-25 {
+      width: 15%;
+      margin-left: auto;
+      margin-right: auto;
+      background: #ff1942;
+      float: left;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Header text</h1>
+  <div class="box-sizings" id="content-box-sizing">content (default) box-sizing</div>
+  <div class="box-sizings" id="border-box-sizing">border box-sizing</div>
+
+  <div class="container">
+    <div class="percent-75">75 Percent width of container</div>
+    <div class="percent-25">25 Percent width of container</div>
+  </div>
+</body>
+</html>
